@@ -31,9 +31,13 @@ public class TeamServiceImpl implements TeamService {
 
             String senderUsername = requestDto.getSenderUsername();
             String receiverUsername = requestDto.getReceiverUsername();
+            Boolean ifFriend = customTeamRepo.ifFriend(senderUsername,receiverUsername);
+            Boolean IsReqeustSent = customTeamRepo.IsReqeustSent(senderUsername,receiverUsername);
 
-        log.debug("Retrieved senderUsername: {}", senderUsername);
-        log.debug("Retrieved receiverUsername: {}", receiverUsername);
+
+
+        log.debug("Retrieved ifFriend: {}",ifFriend );
+        log.debug("Retrieved IsReqeustSent: {}", IsReqeustSent);
 
         if(senderUsername == null || receiverUsername == null){
                ResponseDto responseDto = new ResponseDto();
@@ -53,6 +57,12 @@ public class TeamServiceImpl implements TeamService {
                    responseDto.setResult("You can't add yourself as a team mate");
                    return ResponseEntity.ok(responseDto);
                }
+
+               else if(customTeamRepo.IsReqeustSent(senderUsername,receiverUsername)){
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Request already sent");
+            return ResponseEntity.ok(responseDto);
+        }
 
         else if(customTeamRepo.ifFriend(senderUsername,receiverUsername)){
             ResponseDto responseDto = new ResponseDto();

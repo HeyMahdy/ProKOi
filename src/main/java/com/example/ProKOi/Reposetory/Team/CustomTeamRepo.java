@@ -17,12 +17,23 @@ public class CustomTeamRepo {
     private MongoTemplate mongoTemplate;
 
 
-    public boolean ifFriend (String Sender, String Receiver){
+    public boolean ifFriend(String sender, String receiver) {
+        Query query = new Query();
+        query.addCriteria(
+                Criteria.where("username").is(sender) // Match User A's document
+                        .and("teamMates").is(receiver) // Check if User B's username exists in User A's teamMates list
+        );
+
+        User userWithTeammate = mongoTemplate.findOne(query, User.class);
+
+        return userWithTeammate != null; // Return true if found, false otherwise
+    }
+    public boolean IsReqeustSent (String Sender, String Receiver){
 
         Query query = new Query();
         query.addCriteria(
-                Criteria.where("username").is(Sender) // Match User 2
-                        .and("teamMates.username").is(Receiver) // Check if SpecificUser exists in teamMates
+                Criteria.where("username").is(Receiver) // Match User 2
+                        .and("pendingList").is(Sender) // Check if SpecificUser exists in teamMates
         );
         User userWithTeammate = mongoTemplate.findOne(query, User.class);
 

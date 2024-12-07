@@ -25,8 +25,8 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private Set<User> teamMates = new HashSet<>();
-    private Set<User> pendingList = new HashSet<>();
+    private Set<String> teamMates = new HashSet<>();
+    private Set<String> pendingList = new HashSet<>();
 
 
 
