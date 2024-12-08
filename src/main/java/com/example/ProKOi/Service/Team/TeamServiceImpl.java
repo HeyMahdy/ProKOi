@@ -16,7 +16,7 @@ public class TeamServiceImpl implements TeamService {
 
     private CustomTeamRepo customTeamRepo;
 
-    private  TeamrRepo teamrRepo;
+    private TeamrRepo teamrRepo;
 
 
     public TeamServiceImpl(CustomTeamRepo customTeamRepo, TeamrRepo teamrRepo) {
@@ -25,65 +25,85 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    //@Transactional
+    @Transactional
     public ResponseEntity<ResponseDto> addTeamMate(RequestDto requestDto) {
 
 
-            String senderUsername = requestDto.getSenderUsername();
-            String receiverUsername = requestDto.getReceiverUsername();
-            Boolean ifFriend = customTeamRepo.ifFriend(senderUsername,receiverUsername);
-            Boolean IsReqeustSent = customTeamRepo.IsReqeustSent(senderUsername,receiverUsername);
+        String senderUsername = requestDto.getSenderUsername();
+        String receiverUsername = requestDto.getReceiverUsername();
 
 
+        if (senderUsername == null || receiverUsername == null) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Sender or Receiver can not be null");
+            return ResponseEntity.ok(responseDto);
 
-        log.debug("Retrieved ifFriend: {}",ifFriend );
-        log.debug("Retrieved IsReqeustSent: {}", IsReqeustSent);
+        } else if (customTeamRepo.ifUserExit(receiverUsername) == false || customTeamRepo.ifUserExit(senderUsername) == false) {
 
-        if(senderUsername == null || receiverUsername == null){
-               ResponseDto responseDto = new ResponseDto();
-               responseDto.setResult("Sender or Receiver can not be null");
-               return ResponseEntity.ok(responseDto);
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("User Does not exist");
+            return ResponseEntity.ok(responseDto);
+        } else if (senderUsername.equals(receiverUsername)) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("You can't add yourself as a team mate");
+            return ResponseEntity.ok(responseDto);
+        } else if (customTeamRepo.IsReqeustSent(senderUsername, receiverUsername)) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Request already sent");
+            return ResponseEntity.ok(responseDto);
+        } else if (customTeamRepo.ifFriend(senderUsername, receiverUsername)) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("You are already team mates");
+            return ResponseEntity.ok(responseDto);
+        } else {
 
+            customTeamRepo.addFriend(senderUsername, receiverUsername);
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Request sent");
+            return ResponseEntity.ok(responseDto);
         }
-        else if(customTeamRepo.ifUserExit(receiverUsername) == false || customTeamRepo.ifUserExit(senderUsername) == false){
 
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> AcceptState(RequestDto requestDto) {
+
+        String Sender = requestDto.getSenderUsername();
+        String Receiver = requestDto.getReceiverUsername();
+
+        if(Sender == null || Receiver == null){
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Sender or Receiver can not be null");
+            return ResponseEntity.ok(responseDto);
+        }
+        else if(customTeamRepo.ifUserExit(Receiver) == false){
             ResponseDto responseDto = new ResponseDto();
             responseDto.setResult("User Does not exist");
             return ResponseEntity.ok(responseDto);
         }
 
-               else if(senderUsername.equals(receiverUsername)){
-                   ResponseDto responseDto = new ResponseDto();
-                   responseDto.setResult("You can't add yourself as a team mate");
-                   return ResponseEntity.ok(responseDto);
-               }
-
-               else if(customTeamRepo.IsReqeustSent(senderUsername,receiverUsername)){
+        else if (Sender.equals(Receiver)) {
             ResponseDto responseDto = new ResponseDto();
-            responseDto.setResult("Request already sent");
+            responseDto.setResult("You can't add yourself as a team mate");
             return ResponseEntity.ok(responseDto);
         }
 
-        else if(customTeamRepo.ifFriend(senderUsername,receiverUsername)){
+
+
+        else{
+                     customTeamRepo.Friend(Sender, Receiver);
             ResponseDto responseDto = new ResponseDto();
-            responseDto.setResult("You are already team mates");
+            responseDto.setResult("Request Accepted");
             return ResponseEntity.ok(responseDto);
         }
-
-                  else {
-
-                         customTeamRepo.addFriend(senderUsername,receiverUsername);
-                      ResponseDto responseDto = new ResponseDto();
-                      responseDto.setResult("Request sent");
-                      return ResponseEntity.ok(responseDto);
-                  }
-
-               }
-
-
-
-
 
 
     }
 
+    @Override
+    public ResponseEntity<ResponseDto> RejectState(RequestDto requestDto) {
+        return null;
+    }
+
+
+}

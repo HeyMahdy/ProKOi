@@ -4,7 +4,6 @@ import com.example.ProKOi.DTO.Team.RequestDto;
 import com.example.ProKOi.DTO.Team.ResponseDto;
 import com.example.ProKOi.Service.Team.TeamService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,4 +27,17 @@ public class teamControler {
 
 
     }
+
+    @PostMapping("/Accept")
+    public ResponseEntity<ResponseDto> AcceptCheck(@RequestBody RequestDto requestDto) {
+        log.debug("Received RequestDto: {}", requestDto);
+        return teamService.AcceptState(requestDto);
+    }
+
+    @PostMapping("/Reject")
+    public ResponseEntity<ResponseDto> RejectCheck(@RequestBody RequestDto requestDto) {
+       // log.debug("Received RequestDto: {}", requestDto);
+        return teamService.RejectState(requestDto);
+    }
+
 }

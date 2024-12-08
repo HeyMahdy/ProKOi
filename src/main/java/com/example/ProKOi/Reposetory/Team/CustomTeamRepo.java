@@ -68,6 +68,28 @@ public class CustomTeamRepo {
         }
     }
 
+    public void Friend(String Sender , String Receiver){
+        Query query =  new Query();
+        query.addCriteria(Criteria.where("username").is(Receiver));
+        Update update = new Update();
+        update.addToSet("teamMates", Sender);
+        mongoTemplate.updateFirst(query, update, User.class);
+
+        Query query1 =  new Query();
+        query1.addCriteria(Criteria.where("username").is(Sender));
+        Update update1 = new Update();
+        update1.addToSet("teamMates", Receiver);
+        mongoTemplate.updateFirst(query, update, User.class);
+
+        Query query3 = new Query();
+        query3.addCriteria(Criteria.where("username").is(Sender));
+        Update update3 = new Update();
+        update3.pull("pendingList", Receiver);
+        mongoTemplate.updateFirst(query, update, User.class);
+
+
+    }
+
 
 
 }
