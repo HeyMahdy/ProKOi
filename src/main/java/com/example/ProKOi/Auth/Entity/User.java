@@ -25,7 +25,11 @@ public class User {
     private String username;
     private String password;
     private String email;
+
+    @Indexed
     private Set<String> teamMates = new HashSet<>();
+
+    @Indexed
     private Set<String> pendingList = new HashSet<>();
 
 

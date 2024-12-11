@@ -27,6 +27,7 @@ public class CustomTeamRepo {
 
         return userWithTeammate != null; // Return true if found, false otherwise
     }
+
     public boolean IsReqeustSent (String Sender, String Receiver){
 
         Query query = new Query();
@@ -73,8 +74,8 @@ public class CustomTeamRepo {
 
         Query querySender = new Query();
         querySender.addCriteria(
-                Criteria.where("username").is(Receiver) // Match User 2
-                        .and("pendingList").is(Sender) // Check if SpecificUser exists in teamMates
+                Criteria.where("username").is(Sender) // Match User 2
+                        .and("pendingList").is(Receiver) // Check if SpecificUser exists in teamMates
         );
 
         User userWithTeammate = mongoTemplate.findOne(querySender, User.class);
