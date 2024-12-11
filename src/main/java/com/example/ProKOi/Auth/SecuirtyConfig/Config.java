@@ -60,7 +60,7 @@ public class Config {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable); // disable csrf
-        http.authorizeHttpRequests(request -> request.requestMatchers("/register","/login","/teamMate/add","/teamMate/Accept").permitAll() // permit all requests to register
+        http.authorizeHttpRequests(request -> request.requestMatchers("/register","/login","/teamMate/add","/teamMate/Accept","/teamMate/Reject").permitAll() // permit all requests to register
                 .anyRequest()
                 .authenticated()); //  any request should be authenticated
         http.httpBasic(Customizer.withDefaults());

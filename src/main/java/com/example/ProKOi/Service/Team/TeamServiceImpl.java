@@ -84,17 +84,25 @@ public class TeamServiceImpl implements TeamService {
 
         else if (Sender.equals(Receiver)) {
             ResponseDto responseDto = new ResponseDto();
-            responseDto.setResult("You can't add yourself as a team mate");
+            responseDto.setResult("invalid");
             return ResponseEntity.ok(responseDto);
         }
 
 
 
         else{
-                     customTeamRepo.Friend(Sender, Receiver);
+                  boolean bb =  customTeamRepo.Friend(Sender, Receiver);
             ResponseDto responseDto = new ResponseDto();
-            responseDto.setResult("Request Accepted");
-            return ResponseEntity.ok(responseDto);
+            if(bb==true){
+                responseDto.setResult("Request Accepted");
+                return ResponseEntity.ok(responseDto);
+            }
+            else {
+                responseDto.setResult("Request not found");
+                return ResponseEntity.ok(responseDto);
+            }
+
+
         }
 
 
@@ -102,7 +110,43 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public ResponseEntity<ResponseDto> RejectState(RequestDto requestDto) {
-        return null;
+        String Sender = requestDto.getSenderUsername();
+        String Receiver = requestDto.getReceiverUsername();
+
+        if(Sender == null || Receiver == null){
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("Sender or Receiver can not be null");
+            return ResponseEntity.ok(responseDto);
+        }
+        else if(customTeamRepo.ifUserExit(Receiver) == false){
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("User Does not exist");
+            return ResponseEntity.ok(responseDto);
+        }
+
+        else if (Sender.equals(Receiver)) {
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setResult("invalid");
+            return ResponseEntity.ok(responseDto);
+        }
+
+
+
+        else{
+            boolean bb =  customTeamRepo.notFriend(Sender, Receiver);
+            ResponseDto responseDto = new ResponseDto();
+            if(bb==true){
+                responseDto.setResult("Request Rejected");
+                return ResponseEntity.ok(responseDto);
+            }
+            else {
+                responseDto.setResult("Request not found");
+                return ResponseEntity.ok(responseDto);
+            }
+
+
+        }
+
     }
 
 
