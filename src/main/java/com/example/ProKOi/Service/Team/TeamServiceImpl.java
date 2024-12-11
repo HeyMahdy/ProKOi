@@ -66,6 +66,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> AcceptState(RequestDto requestDto) {
 
         String Sender = requestDto.getSenderUsername();
@@ -109,6 +110,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> RejectState(RequestDto requestDto) {
         String Sender = requestDto.getSenderUsername();
         String Receiver = requestDto.getReceiverUsername();
